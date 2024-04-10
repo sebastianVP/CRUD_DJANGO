@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'postres',
+    'bootstrap4', # Registramos Bootstrap 4 (Este comentario es para explicación, debes de eliminarlo para probar la aplicación, si no te va a dar error)
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -73,11 +75,30 @@ WSGI_APPLICATION = 'cruddjango.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+'''
+ 
+DATABASES = {
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'default': { # le coloco default para poder usar MySQL 
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cruddjango31',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        }
     }
 }
 
@@ -116,7 +137,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+#STATIC_URL = 'static/'
+
+
+ 
+# La URL para los archivos Estáticos (CSS, JS, Imágenes, etc.)
+STATIC_URL = '/static/' 
+ 
+# Las rutas para las imágenes de cada registro o postre 
+MEDIA_URL = '/postres/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'postres/static/uploads')
+ 
+# Activamos 'CookieStorage' que nos permite enviar los mensajes de respuesta al Crear, Eliminar y Actualizar un registro
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
